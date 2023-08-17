@@ -116,6 +116,26 @@ updatepersonalinfo:(req, res)=> {
     
     },
 
+//     updatepersonalinfo:(req, res)=> {
+//         var id= req.params.candidate_id;
+//           var updateData=req.body;
+//           const user_id=req.body.user_id;
+//           const sqlSearch = "SELECT * FROM users WHERE contact_no=? "
+//           const search_query = mysql.format(sqlSearch, [contact_no])
+//           var sql = `UPDATE candidate SET ?  WHERE candidate_id=${id}`;
+//           var sql2 = `UPDATE user SET contact_no='${contat}' WHERE user_id=${user_id}`;
+//           pool.query(sql, [updateData, id], function (err, data) {
+//           if (err) throw err;
+//           console.log(data.affectedRows + " record(s) updated");
+//           res.send({
+//             error:0,
+//             data:updateData,
+//             message:"succesful updated"
+//     })
+//         });
+        
+//         },
+
 
 //     updateskills:(req,res)=>{
       
@@ -269,41 +289,39 @@ getjobbyid:(req,res,next)=>{
 
 
 addquery:async (req, res) => {
-        const id=req.params.user_id;
+        // const id=req.params.user_id;
         const name = req.body.name;
-        const domain = req.body.email;
-        // const logo = req.body.logo;
+        
+      
         const contact_no = req.body.contact_no;
-        const address = req.body.address;
-        const city = req.body.city;
-        const state = req.body.state;
-        const zip = req.body.zip;
-        console.log(id)
-        // const whatsapp_profile=req.whatsapp_profile;
-        // const linkedin_profile=req.body.linkedin_profile;
-        // const insta_profile=req.body.insta_profile;
-        // const website=req.body.website;
-        const description=req.body.description;
-        // const domain = req.body.domain;
+        const email = req.body.email;
+        const subject = req.body.subject;
+        const message= req.body.message;
+        
+        // console.log(id)
+       
+      
         
        
        pool.getConnection(async (err, connection) => {
             if (err) throw (err)
             
             // const search_query = mysql.format(sqlSearch, [email])
-            const sqlInsert = "INSERT INTO company (user_id,name,domain,contact_no,address,city,state,zip,description) VALUES (?,?,?,?,?,?,?,?,?)"
-            //  const insert="INSERT INTO company (user_id) values (?)"
-            // const copyinsert="INSERT INTO candidate (name,user_id) values (?,?)"
-            const insert_query = mysql.format(sqlInsert,[id,name,domain,contact_no,address,city,state,zip,description])
-            // const insert_id=mysql.format(insert,[id])
+            const sqlInsert = "INSERT INTO query (name,contact_no,email,subject,message) VALUES (?,?,?,?,?)"
+           
+            const insert_query = mysql.format(sqlInsert,[name,contact_no,email,subject,message])
+          
             await connection.query(insert_query, (err, result) => {
                 connection.release()
                 // connection.query(insert_id)
                 if (err) throw (err)
-                console.log("--------> Created new company")
+                console.log("--------> Query add succesfully")
                 console.log(result.insertId)
             
-                res.sendStatus(201)
+                // res.sendStatus(201)
+                res.status(201).json({
+                        message:'Query add succesfully',
+                })
             })
           
                       
@@ -435,7 +453,7 @@ updatetechnical:(req, res)=> {
         
 
         
-//     }
+//     },
 
 applyonjob:(req,res)=>{
       const  candidate_id=req.params.candidate_id;
@@ -562,6 +580,31 @@ pagignationofcandidate:(req,res)=>{
                 start_limit=(page-1)*record_per_page;
         }
         var sql=`SELECT * FROM candidate ORDER BY candidate.candidate_id ASC LIMIT ${start_limit},${record_per_page}`;
+        pool.query(sql, function (err, data) {
+          if (err) throw err;
+            res.send({
+                data:data,
+                message:"successful"
+        })
+        //   res.render('users-form', { title: 'User List', editData: data[0]});
+        });
+},
+pagignationofusers:(req,res)=>{
+        // var candidateId= req.params.candidate_id;
+        var job_id=req.params.job_id
+        let page=req.body.page;
+        var start_limit=1;
+       
+        let record_per_page=10;
+        if(!page){
+                page=1
+                // start_limit=start_limit;
+                record_per_page=record_per_page;
+        }
+        if(page){
+                start_limit=(page-1)*record_per_page;
+        }
+        var sql=`SELECT * FROM users ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
         pool.query(sql, function (err, data) {
           if (err) throw err;
             res.send({
@@ -712,7 +755,24 @@ var id= req.params.candidate_id;
         });
 
 
-}
+},
+totaljobapply:(req,res,next)=>{
+        var id= req.params.candidate_id;
+        var query=`select * from junction_tbl where candidate_id=${id}`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+
 }
 
 

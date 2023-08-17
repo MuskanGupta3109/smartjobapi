@@ -55,7 +55,38 @@ getcompanybyid:(req,res,next)=>{
             }
     })
 },
-
+getallapprovedjobs:(req,res,next)=>{
+        // const is_Active=req.body.is_active;
+        var query="select * from jobs where is_approved=1";
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+getallnotapprovedjobs:(req,res,next)=>{
+        // const is_Active=req.body.is_active;
+        var query="select * from jobs where is_approved=0";
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+}
 
 
 

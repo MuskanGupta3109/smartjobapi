@@ -145,7 +145,26 @@ addcompany:async (req, res) => {
             }) //end of connection.query()
             //end of db.getConnection()
             },
-
+            editcompanydetail:function(req, res, next) {
+                var company_id= req.params.company_id
+                var sql=`SELECT * FROM company WHERE company_id=${company_id}`;
+                pool.query(sql, function (err, data) {
+                  if (err) throw err;
+                    res.send({data:data})
+                //   res.render('users-form', { title: 'User List', editData: data[0]});
+                });
+            },
+            updatecompanydetail:function(req, res, next) {
+              var company_id= req.params.company_id
+              var updatedata=req.body;
+              var sql = `UPDATE company SET ? WHERE company_id=${company_id}`;
+              pool.query(sql, [updatedata, company_id], function (err, data) {
+              if (err) throw err;
+              console.log(data.affectedRows + " record(s) updated");
+              res.send({data:data})
+            });
+            
+            },
 
 
             getjob:function(req, res, next) {
@@ -212,7 +231,7 @@ addcompany:async (req, res) => {
         
         },
         getallactive:(req,res,next)=>{
-            var query="select * is_active from users where is_active=1";
+            var query="select * from users where is_active=1";
             pool.query(query,(err,results)=>{
                     if(!err){
                             return res.status(200).json({
@@ -226,5 +245,38 @@ addcompany:async (req, res) => {
                     }
             })
     },
+    getalldeactive:(req,res,next)=>{
+        var query="select * from users where is_active=0";
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+
+getallapprovedjobsforcompany:(req,res,next)=>{
+        // const is_Active=req.body.is_active;
+        const company_id=req.params.company_id;
+        var query="select * from jobs where is_approved=1 and company_id="+company_id;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
 
 }

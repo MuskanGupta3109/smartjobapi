@@ -1,9 +1,9 @@
-const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno} = require("../users/authentication/usercontrooler");
+const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno, logout} = require("../users/authentication/usercontrooler");
 const router = require("express").Router();
-const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage}=require("../users/jobseeker/updateinfo")
-const{update, getallcompany,getcompanybyid}=require("../users/admin/updateinfo")
+const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply}=require("../users/jobseeker/updateinfo")
+const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
-const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive } = require("./updateusers");
+const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany } = require("./updateusers");
 const { createPoolCluster } = require("mysql");
 const multer  = require('multer')
 const path=require('path')
@@ -88,11 +88,12 @@ router.post("/applyonjob/:candidate_id",applyonjob)
 router.get("/pagingnation",pagignation)
 router.get("/editactive/:user_id",editactive)
 router.post("/updateactive/:user_id",updateactive)
-router.get("/pagignationofjobwithpage/",pagignationofjobwithpage)
+router.get("/pagignationofjobwithpage",pagignationofjobwithpage)
 router.get("/pagignationofcandidate",pagignationofcandidate)
+router.get("/pagignationofusers",pagignationofusers)
 router.get("/searchforcandidate",searchforcandidate)
 router.get("/searchforjob",searchforjob)
-
+router.post("/addquery",addquery)
 
 
 //recruiter
@@ -100,6 +101,8 @@ router.post("/addcompany/:user_id",addcompany)
 router.post("/addjob/:company_id",addjob)
 router.get("/getalljobdata/:job_id",getjob)
 router.post("/updatejob/:job_id",updatejob)
+router.get("/editcompanydetail/:company_id",editcompanydetail)
+router.post("/updatecompanydetail/:company_id",updatecompanydetail)
 
 
 //admin
@@ -127,17 +130,19 @@ router.post('/uploadidproof/:company_id',upload.single('id_proof'),uploadidproof
 // })
 
 router.get("/getallactive",getallactive)
+router.get("/getalldeactive",getalldeactive)
+router.get("/getallaprovedjobs",getallapprovedjobs)
+router.get("/getallnotaprovedjobs",getallnotapprovedjobs)
+
+router.get("/getallapprovedjobforcompany/:company_id",getallapprovedjobsforcompany)
+
+
+router.get("/totaljobapply/:candidate_id",totaljobapply)
 
 
 
 
-
-
-
-
-
-
-router.get('/edit/:candidate_id', function(req, res, next) {
+router.get('/edit/:candidate_id', function(req, res, next) {  //use for edit each fields of candidate details
     var candidateId= req.params.candidate_id;
     var sql=`SELECT * FROM candidate WHERE candidate_id=${candidateId}`;
     pool.query(sql, function (err, data) {
@@ -217,6 +222,20 @@ var id= req.params.candidate_id;
     //        }
     //      );
     //    });
+router.get("/logout",logout);
+
+
+    router.get('/delete/:user_id', function(req, res, next) {
+      var id= req.params.user_id;
+        var sql = 'DELETE FROM users WHERE user_id = ?';
+        pool.query(sql, [id], function (err, data) {
+        if (err) throw err;
+        console.log(data.affectedRows + " record(s) updated");
+      });
+      // res.redirect('/users/user-list');
+      res.status(200).json({ RESULT: true,message:"delete user successfully" });
+      
+    });
     
 
 module.exports = router;

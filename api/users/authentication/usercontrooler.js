@@ -356,7 +356,10 @@ module.exports={
                     if (result.length != 0) {
                         connection.release()
                         console.log("------> User already exists")
-                        res.sendStatus(409)
+                        // res.sendStatus(409)
+                        res.status(409).json({
+                            message:'User already exists',
+                    })
                     }
                     else {
                         if(hashedPassword){
@@ -500,8 +503,76 @@ module.exports={
 
             //     )
             // }
-    
 
+             logout:async(req,res)=>{
+                try{
+                    res.clearCookie('token')
+                    // res.redirect('/login')
+                    res.status(201).json({
+                        message:'logout successfully',
+                    })
+                    
+                }
+                catch(err){
+                    console.log(err)
+                }
+            },
+//             changepassword:async(req,res)=>{
+//                 // const oldpassword=req.body.oldpassword;
+//                 // const newpassword=req.body.newpassword;
+                
+//         const oldhashedPassword = await bcrypt.hash(req.body.oldpassword, 10);
+        
+//         const newhashedPassword = await bcrypt.hash(req.body.newpassword, 10);
+//                 const cpassword=req.body.cpassword;
+              
+//                 pool.getConnection(async(err,connection)=>{
+//                     if (err) throw (err)
+//                     const sqlSearch = "SELECT * password FROM users WHERE user_id="+{id};
+
+
+//                     const result=compareSync(oldhashedPassword,newhashedPassword);
+
+//                 })
+//             }
+    
+//  static updatepassword = async (req, res) => {
+//         try {
+//             //console.log(req.body)
+//             const { oldPassword, newPassword, confirmPassword } = req.body;
+
+//             if (oldPassword && newPassword && confirmPassword) {
+//                 const user = await UserModel.findById(req.user.id).select("+password");
+//                 const isMatch = await bcrypt.compare(oldPassword, user.password);
+//                 //const isPasswordMatched = await userModel.comparePassword(req.body.oldPassword);
+//                 if (!isMatch) {
+//                     req.flash("error","old password is incorecct")
+//                     res.redirect('/admin/changepassword')
+//                 } else {
+//                     if (newPassword !== confirmPassword) {
+//                         req.flash("error","password does not matched")
+//                         res.redirect('/admin/changepassword')
+//                     } else {
+//                         const salt = await bcrypt.genSalt(10);
+//                         const newHashPassword = await bcrypt.hash(newPassword, salt);
+//                         //console.log(req.user)
+//                         await UserModel.findByIdAndUpdate(req.user.id, {
+//                             $set: { password: newHashPassword },
+//                         });
+//                         req.flash("success","password change successfully")
+//                         res.redirect('/admin/changepassword')
+                       
+//                     }
+//                 }
+//             } else {
+//                 req.flash("error","All field are required")
+//                 res.redirect('/admin/changepassword')
+//             }
+//         }
+//         catch(err) {
+//         console.log(err)
+//     }
+// }
     
     
 }
