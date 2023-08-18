@@ -7,6 +7,7 @@ const mysql=require("mysql")
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const path=require('path')
+const cors = require('cors')
 
 
 const storage=multer.diskStorage({
@@ -17,7 +18,10 @@ const storage=multer.diskStorage({
 })
 
 require("./db/connect_db");
-
+const options={
+  origin:'*'
+}
+app.use(cors(options))
 app.use(express.json())
 const userRouter=require("./api/users/user.router");
 
