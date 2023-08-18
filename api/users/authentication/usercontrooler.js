@@ -517,62 +517,48 @@ module.exports={
                     console.log(err)
                 }
             },
-//             changepassword:async(req,res)=>{
-//                 // const oldpassword=req.body.oldpassword;
-//                 // const newpassword=req.body.newpassword;
+            changepassword:async(req,res)=>{
+                const id=req.params.user_id;
+                // const oldpassword=req.body.oldpassword;
+                // const newpassword=req.body.newpassword;
                 
-//         const oldhashedPassword = await bcrypt.hash(req.body.oldpassword, 10);
-        
-//         const newhashedPassword = await bcrypt.hash(req.body.newpassword, 10);
-//                 const cpassword=req.body.cpassword;
+        const oldhashedPassword = await bcrypt.hash(req.body.oldpassword, 10);
+        // const newpassword=req.body.newpassword;
+        const newhashedpassword = await bcrypt.hash(req.body.newpassword, 10);
+                const cpassword=req.body.cpassword;
               
-//                 pool.getConnection(async(err,connection)=>{
-//                     if (err) throw (err)
-//                     const sqlSearch = "SELECT * password FROM users WHERE user_id="+{id};
+                pool.getConnection(async(err,connection)=>{
+                    if (err) throw (err)
+                    const sqlSearch = "SELECT  password FROM users WHERE user_id="+id;
+                    const search_query = mysql.format(sqlSearch, [oldhashedPassword])
 
+                    // const result=compareSync(oldhashedPassword,);
+                    await connection.query(search_query,async (err, result) => {
+                        if (err) throw (err)
+                        console.log("------> Search Results")
+                        console.log(result.length)
+                        if (result.length != 0) {
 
-//                     const result=compareSync(oldhashedPassword,newhashedPassword);
+                            var sql = `UPDATE users SET password='${newhashedpassword}' WHERE user_id=${id}`;
+                            pool.query(sql, [newhashedpassword, id], function (err, data) {
+                            if (err) throw err;
+                            console.log(data.affectedRows + " record(s) updated");
+                            res.send({data:data})
+                          });
+                            // connection.release()
+                            // console.log("------> User already exists")
+                            // // res.sendStatus(409)
+                            // res.status(409).json({
+                            //     message:'User already exists',
+                        // })
+                        
 
-//                 })
-//             }
+                        }
+                    })
+
+                })
+            }
     
-//  static updatepassword = async (req, res) => {
-//         try {
-//             //console.log(req.body)
-//             const { oldPassword, newPassword, confirmPassword } = req.body;
 
-//             if (oldPassword && newPassword && confirmPassword) {
-//                 const user = await UserModel.findById(req.user.id).select("+password");
-//                 const isMatch = await bcrypt.compare(oldPassword, user.password);
-//                 //const isPasswordMatched = await userModel.comparePassword(req.body.oldPassword);
-//                 if (!isMatch) {
-//                     req.flash("error","old password is incorecct")
-//                     res.redirect('/admin/changepassword')
-//                 } else {
-//                     if (newPassword !== confirmPassword) {
-//                         req.flash("error","password does not matched")
-//                         res.redirect('/admin/changepassword')
-//                     } else {
-//                         const salt = await bcrypt.genSalt(10);
-//                         const newHashPassword = await bcrypt.hash(newPassword, salt);
-//                         //console.log(req.user)
-//                         await UserModel.findByIdAndUpdate(req.user.id, {
-//                             $set: { password: newHashPassword },
-//                         });
-//                         req.flash("success","password change successfully")
-//                         res.redirect('/admin/changepassword')
-                       
-//                     }
-//                 }
-//             } else {
-//                 req.flash("error","All field are required")
-//                 res.redirect('/admin/changepassword')
-//             }
-//         }
-//         catch(err) {
-//         console.log(err)
-//     }
-// }
-    
     
 }

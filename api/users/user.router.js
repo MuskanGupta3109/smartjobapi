@@ -1,4 +1,4 @@
-const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno, logout} = require("../users/authentication/usercontrooler");
+const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno, logout, changepassword} = require("../users/authentication/usercontrooler");
 const router = require("express").Router();
 const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
@@ -55,6 +55,7 @@ router.get("/getalladmin", getadmin)
 router.post("/createussers",createUseers)
 router.get("/login", userlogin)
 router.post("/createUseerbycontactno",createUseerbycontactno)
+router.post("/updatepassword/:user_id",changepassword)
 // router.post("/createUser",createUser)
 // router.post("/createUsers",createUsers)
 
