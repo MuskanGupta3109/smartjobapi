@@ -3,7 +3,10 @@ const router = require("express").Router();
 const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
-const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany } = require("./updateusers");
+const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter } = require("./updateusers");
+var nodemailer = require('nodemailer');
+var randtoken = require('rand-token');
+
 const { createPoolCluster } = require("mysql");
 const multer  = require('multer')
 const path=require('path')
@@ -130,8 +133,10 @@ router.post('/uploadidproof/:company_id',upload.single('id_proof'),uploadidproof
 //   return res.send(filename)
 // })
 
-router.get("/getallactive",getallactive)
-router.get("/getalldeactive",getalldeactive)
+router.get("/getallactivejobseeker",getallactivejobseeker)
+router.get("/getalldeactivejobseeker",getalldeactivejobseeker)
+router.get("/getallactiverecruiter",getallactiverecruiter)
+router.get("/getalldeactiverecruiter",getalldeactiverecruiter)
 router.get("/getallaprovedjobs",getallapprovedjobs)
 router.get("/getallnotaprovedjobs",getallnotapprovedjobs)
 
@@ -237,6 +242,159 @@ router.get("/logout",logout);
       res.status(200).json({ RESULT: true,message:"delete user successfully" });
       
     });
+    function sendEmail(email, token) {
+ 
+      var email = email;
+      var token = token;
+   
+      var mail = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+              user: '', // Your email id
+              pass: '' // Your password
+          }
+      });
+   
+      var mailOptions = {
+          from: 'tutsmake@gmail.com',
+          to: email,
+          subject: 'Reset Password Link - Tutsmake.com',
+          // html: '<p>You requested for reset password, kindly use this <a href="http://localhost:3000/api/users/reset-password?token=' + token + '">link</a> to reset your password</p>'
+          
+        
+      };
+   
+      mail.sendMail(mailOptions, function(error, info) {
+       
+          if (error) {
+           
+              console.log(error)
+          } else {
+            console.log(mailOptions)
+              console.log(0)
+          }
+      });
+  }
+   
+  /* home page */
+  // router.get('/', function(req, res, next) {
+   
+  //     res.render('index', {
+  //         title: 'Forget Password Page'
+  //     });
+  // });
+   
+  /* send reset password link in email */
+  router.post('/reset-password-email', function(req, res, next) {
+   
+      var email = req.body.email;
+   
+      //console.log(sendEmail(email, fullUrl));
+   
+      pool.query('SELECT * FROM users WHERE email ="' + email + '"', function(err, result) {
+          if (err) throw err;
+           
+          var type = ''
+          var msg = ''
+     
+          console.log(result[0]);
+       
+          if (result[0].email.length > 0) {
+   
+             var token = randtoken.generate(20);
+   
+             var sent = sendEmail(email, token);
+   
+               if (sent != '0') {
+   
+                  var data = {
+                      token: token
+                  }
+   
+                  pool.query('UPDATE users SET ? WHERE email ="' + email + '"', data, function(err, result) {
+                      if(err) throw err
+           
+                  })
+   
+                  type = 'success';
+                  msg = 'The reset password link has been sent to your email address';
+   
+              } else {
+                  type = 'error';
+                  msg = 'Something goes to wrong. Please try again';
+              }
+   
+          } else {
+              console.log('2');
+              type = 'error';
+              msg = 'The Email is not registered with us';
+   
+          }
+      
+          req.flash(type, msg);
+          // res.redirect('/');
+      });
+  })
+   
+  /* reset page */
+  router.get('/reset-password', function(req, res, next) {
+       
+   
+      // res.send('reset-password', {
+        res.send({
+          title: 'Reset Password Page',
+          token: req.query.token
+      });
+  });
+   
+  /* update password to database */
+  router.post('/update-password', function(req, res, next) {
+   
+      var token = req.body.token;
+      var password = req.body.password;
+   
+     pool.query('SELECT * FROM users WHERE token ="' + token + '"', function(err, result) {
+          if (err) throw err;
+   
+          var type
+          var msg
+   
+          if (result.length > 0) {
+                  
+                var saltRounds = 10;
+   
+               // var hash = bcrypt.hash(password, saltRounds);
+   
+              bcrypt.genSalt(saltRounds, function(err, salt) {
+                    bcrypt.hash(password, salt, function(err, hash) {
+   
+                     var data = {
+                          password: hash
+                      }
+   
+                      .query('UPDATE users SET ? WHERE email ="' + result[0].email + '"', data, function(err, result) {
+                          if(err) throw err
+                     
+                      });
+   
+                    });
+                });
+   
+              type = 'success';
+              msg = 'Your password has been updated successfully';
+                
+          } else {
+   
+              console.log('2');
+              type = 'success';
+              msg = 'Invalid link; please try again';
+   
+              }
+   
+          req.flash(type, msg);
+          res.redirect('/');
+      });
+  })
     
 
 module.exports = router;

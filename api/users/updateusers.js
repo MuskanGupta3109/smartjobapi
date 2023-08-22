@@ -230,8 +230,8 @@ addcompany:async (req, res) => {
         
         
         },
-        getallactive:(req,res,next)=>{
-            var query="select * from users where is_active=1";
+        getallactivejobseeker:(req,res,next)=>{
+            var query="select * from users where is_active=1 and role=1";
             pool.query(query,(err,results)=>{
                     if(!err){
                             return res.status(200).json({
@@ -245,8 +245,8 @@ addcompany:async (req, res) => {
                     }
             })
     },
-    getalldeactive:(req,res,next)=>{
-        var query="select * from users where is_active=0";
+    getalldeactivejobseeker:(req,res,next)=>{
+        var query="select * from users where is_active=0 and role=1";
         pool.query(query,(err,results)=>{
                 if(!err){
                         return res.status(200).json({
@@ -259,6 +259,36 @@ addcompany:async (req, res) => {
                         return res.status(500).json(err);
                 }
         })
+},
+getallactiverecruiter:(req,res,next)=>{
+        var query="select * from users where is_active=1 and role=2";
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+getalldeactiverecruiter:(req,res,next)=>{
+    var query="select * from users where is_active=0 and role=2";
+    pool.query(query,(err,results)=>{
+            if(!err){
+                    return res.status(200).json({
+                            error:0,
+                            data:results,
+                            message:"successful"
+                    });
+            }
+            else{
+                    return res.status(500).json(err);
+            }
+    })
 },
 
 getallapprovedjobsforcompany:(req,res,next)=>{
