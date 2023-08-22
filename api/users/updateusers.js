@@ -308,5 +308,22 @@ getallapprovedjobsforcompany:(req,res,next)=>{
                 }
         })
 },
+getallpostedjobbycompany:(req,res,next)=>{
+        // const is_Active=req.body.is_active;
+        const company_id=req.params.company_id;
+        var query="select * from jobs company_id="+company_id;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
 
 }

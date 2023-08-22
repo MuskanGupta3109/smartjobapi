@@ -3,7 +3,7 @@ const router = require("express").Router();
 const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
-const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter } = require("./updateusers");
+const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany } = require("./updateusers");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 
@@ -139,6 +139,7 @@ router.get("/getallactiverecruiter",getallactiverecruiter)
 router.get("/getalldeactiverecruiter",getalldeactiverecruiter)
 router.get("/getallaprovedjobs",getallapprovedjobs)
 router.get("/getallnotaprovedjobs",getallnotapprovedjobs)
+router.get("/getallpostedjobbycompany/:company_id",getallpostedjobbycompany)
 
 router.get("/getallapprovedjobforcompany/:company_id",getallapprovedjobsforcompany)
 
