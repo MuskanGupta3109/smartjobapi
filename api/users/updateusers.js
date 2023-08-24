@@ -325,5 +325,66 @@ getallpostedjobbycompany:(req,res,next)=>{
                 }
         })
 },
+adddomain:async (req, res) => {
+        // const id=req.params.user_id;
+        const name = req.body.name;
+        // console.log(id)
+       
+         pool.getConnection(async (err, connection) => {
+            if (err) throw (err)
+            
+            // const search_query = mysql.format(sqlSearch, [email])
+            const sqlInsert = "INSERT INTO  domains (name) VALUES (?)"
+           
+            const insert_query = mysql.format(sqlInsert,[name])
+          
+            await connection.query(insert_query, (err, result) => {
+                connection.release()
+                // connection.query(insert_id)
+                if (err) throw (err)
+                console.log("--------> domain add succesfully")
+                console.log(result.insertId)
+            
+                // res.sendStatus(201)
+                res.status(201).json({
+                        message:'domain add succesfully',
+                })
+            })
+          
+                      
+                           
+        }) //end of connection.query()
+        //end of db.getConnection()
+        },
+        getsubdomainbydomainid:(req,res,next)=>{
+                const id=req.params.domain_id;
+                var query="select * from sub_domains where domain_id="+id;
+                pool.query(query,(err,results)=>{
+                        if(!err){
+                                return res.status(200).json({
+                                    results,
+                                    message:"successful"
+                                });
+                        }
+                        else{
+                                return res.status(500).json(err);
+                        }
+                })
+            },
+            getallsubdomain:(req,res,next)=>{
+                var query="select * from sub_domains";
+                pool.query(query,(err,results)=>{
+                        if(!err){
+                                return res.status(200).json({
+                                        error:0,
+                                        data:results,
+                                        message:"successful"
+                                });
+                        }
+                        else{
+                                return res.status(500).json(err);
+                        }
+                })
+        },
 
 }
