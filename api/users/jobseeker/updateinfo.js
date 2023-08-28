@@ -773,8 +773,71 @@ totaljobapply:(req,res,next)=>{
         })
 },
 
+addbanner:(req,res)=>{
+        // image=req.body.fieldname
+// var id= req.params.candidate_id;
+
+      var updateData=req.body;
+//       var files=req.file;
+      var banner=req.file.filename;
+//       filename=files.filename;
+      console.log(req.body);
+        console.log(req.file);
+      var sql = `insert into bannertbl (banner) values (?)`;
+//       console.log(image)
+      pool.query(sql, [banner], function (err, data) {
+      if (err) throw err;
+      console.log(data.affectedRows + " record(s) updated");
+      res.send({
+        data:data,
+        message:"successfuly updated"
+        })
+    });
+        
+
+},
+getbannerbyid:function(req, res, next) {
+        var id= req.params.ban_id
+        var sql=`SELECT banner FROM bannertbl WHERE ban_id=${id}`;
+        pool.query(sql, function (err, data) {
+          if (err) throw err;
+            res.send({data:data})
+        //   res.render('users-form', { title: 'User List', editData: data[0]});
+        });
+    },
+    getbanner:function(req, res, next) {
+        // var id= req.params.ban_id
+        var sql=`SELECT banner FROM bannertbl`;
+        pool.query(sql, function (err, data) {
+          if (err) throw err;
+            res.send({data:data})
+        //   res.render('users-form', { title: 'User List', editData: data[0]});
+        });
+    },
+    uploadbanner:(req,res)=>{
+        // image=req.body.fieldname
+        var id= req.params.ban_id;
+
+        var updateData=req.body;
+        //       var files=req.file;
+        var banner=req.file.filename;
+        //       filename=files.filename;
+        console.log(req.body);
+        console.log(req.file);
+        var sql = `UPDATE bannertbl SET banner='${banner}' WHERE ban_id=${id}`;
+        console.log(banner)
+        pool.query(sql, [updateData, id], function (err, data) {
+        if (err) throw err;
+        console.log(data.affectedRows + " record(s) updated");
+        res.send({
+        data:data,
+        message:"successfuly updated"
+        })
+        });
+
+
+},
+
 }
-
-
 
 
