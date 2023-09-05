@@ -386,5 +386,20 @@ adddomain:async (req, res) => {
                         }
                 })
         },
+        getallcandidateonpostedjob:(req,res,next)=>{
+                var query="select * from sub_domains";
+                pool.query(query,(err,results)=>{
+                        if(!err){
+                                return res.status(200).json({
+                                        error:0,
+                                        data:results,
+                                        message:"successful"
+                                });
+                        }
+                        else{
+                                return res.status(500).json(err);
+                        }
+                })
+        },
 
 }

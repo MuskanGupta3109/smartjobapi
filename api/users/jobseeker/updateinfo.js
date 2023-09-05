@@ -772,6 +772,22 @@ totaljobapply:(req,res,next)=>{
                 }
         })
 },
+totalcandidatejobapply:(req,res,next)=>{
+        var id= req.params.job_id;
+        var query=`select * from junction_tbl where job_id=${id}`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
 
 addbanner:(req,res)=>{
         // image=req.body.fieldname
