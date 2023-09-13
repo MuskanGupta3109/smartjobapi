@@ -206,7 +206,8 @@ updatepersonalinfo:(req, res)=> {
 // },
 
 getalljob:(req,res,next)=>{
-        var query="select * from jobs";
+        var query="SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id";
+        
         pool.query(query,(err,results)=>{
                 if(!err){
                         return res.status(200).json({
@@ -300,10 +301,7 @@ addquery:async (req, res) => {
         
         // console.log(id)
        
-      
-        
-       
-       pool.getConnection(async (err, connection) => {
+        pool.getConnection(async (err, connection) => {
             if (err) throw (err)
             
             // const search_query = mysql.format(sqlSearch, [email])
