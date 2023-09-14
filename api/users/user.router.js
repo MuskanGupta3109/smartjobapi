@@ -3,7 +3,7 @@ const router = require("express").Router();
 const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply, addbanner, getbanner, getbannerbyid, uploadbanner, totalcandidatejobapply, totalcandidatecountjobapply}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
-const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany, adddomain, getsubdomainbydomainid, getallsubdomain,getallcandidateonpostedjob} = require("./updateusers");
+const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany, adddomain, getsubdomainbydomainid, getallsubdomain,getallcandidateonpostedjob, getallactivedeactiverecruiter, getallapprovednotappjobsforcompany} = require("./updateusers");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 
@@ -42,9 +42,9 @@ const upload=multer({
 
 router.get("/totalcount/:job_id",totalcandidatecountjobapply)
 
+router.get("/getallactivedeactiveuser",getallactivedeactiverecruiter)
 
-
-
+router.get("/getallapprovednotappjobsforcompany/:company_id",getallapprovednotappjobsforcompany)
 
 
 //get candidate

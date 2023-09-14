@@ -276,6 +276,22 @@ getallactiverecruiter:(req,res,next)=>{
                 }
         })
 },
+getallactivedeactiverecruiter:(req,res,next)=>{
+        const is_active=req.body.is_active;
+        var query="select * from users where role=2 and is_active="+is_active;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
 getalldeactiverecruiter:(req,res,next)=>{
     var query="select * from users where is_active=0 and role=2";
     pool.query(query,(err,results)=>{
@@ -313,6 +329,36 @@ getallpostedjobbycompany:(req,res,next)=>{
         // const is_Active=req.body.is_active;
         const company_id=req.params.company_id;
         var query="select * from jobs company_id="+company_id;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+getallapprovednotappjobsforcompany:(req,res,next)=>{
+        const is_approved=req.body.is_approved;
+        // console.log(req.body)
+        const company_id=req.params.company_id;
+        let page=req.body.page;
+        var start_limit=1;
+       
+        let record_per_page=10;
+        if(!page){
+                page=1
+                // start_limit=start_limit;
+                record_per_page=record_per_page;
+        }
+        if(page){
+                start_limit=(page-1)*record_per_page;
+        }
+        var query="select * from jobs where is_approved="+is_approved+" and company_id="+company_id+" ORDER BY jobs.job_id ASC LIMIT "+start_limit+","+record_per_page+"" ;
         pool.query(query,(err,results)=>{
                 if(!err){
                         return res.status(200).json({
