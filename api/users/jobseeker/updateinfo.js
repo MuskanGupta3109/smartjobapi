@@ -221,6 +221,38 @@ getalljob:(req,res,next)=>{
                 }
         })
 },
+// getalljob:(req,res,next)=>{
+//         var query="SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id";
+        
+//         var query2=`SELECT COUNT(*) FROM junction_tbl WHERE job_id=${id}`;
+//         pool.query(query,(err,results)=>{
+//                 if(!err){
+                        
+//                         pool.query(query2,(err,result2)=>{
+//                                 if(!err){
+//                                         return res.status(200).json({
+//                                                 error:0,
+//                                                 data:{...results, candidateCound:result2},
+//                                                 message:"successful"
+//                                         });
+//                                 }
+//                                 else{
+//                                         return res.status(500).json(err);
+//                                 }
+//                         })
+//                         // return res.status(200).json({
+//                         //         error:0,
+//                         //         data:results,
+//                         //         message:"successful"
+//                         // });
+//                 }
+//                 else{
+//                         return res.status(500).json(err);
+//                 }
+              
+
+//         })
+// },
 getcandidatebyid:(req,res,next)=>{
         const id=req.params.candidate_id;
         var query="select * from candidate where candidate_id="+id;
@@ -551,7 +583,8 @@ editactive:(req, res)=> {
         if(page){
                 start_limit=(page-1)*record_per_page;
         }
-        var sql=`SELECT * FROM jobs ORDER BY jobs.job_id ASC LIMIT ${start_limit},${record_per_page}`;
+        // var sql=`SELECT * FROM jobs ORDER BY jobs.job_id ASC LIMIT ${start_limit},${record_per_page}`;
+        var sql=`SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id ORDER BY jobs.job_id ASC LIMIT  ${start_limit},${record_per_page};`
         pool.query(sql, function (err, data) {
           if (err) throw err;
             res.send({
@@ -774,6 +807,23 @@ totalcandidatejobapply:(req,res,next)=>{
         var id= req.params.job_id;
         var query=`select * from junction_tbl where job_id=${id}`;
         pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+totalcandidatecountjobapply:(req,res,next)=>{
+        var id= req.params.job_id;
+        var query=`select * from junction_tbl where job_id=${id}`;
+        var query2=`SELECT COUNT(*) FROM junction_tbl WHERE job_id=${id}`;
+        pool.query(query2,(err,results)=>{
                 if(!err){
                         return res.status(200).json({
                                 error:0,

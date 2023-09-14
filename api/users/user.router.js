@@ -1,9 +1,9 @@
 const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno, logout, changepassword} = require("../users/authentication/usercontrooler");
 const router = require("express").Router();
-const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply, addbanner, getbanner, getbannerbyid, uploadbanner, totalcandidatejobapply}=require("../users/jobseeker/updateinfo")
+const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply, addbanner, getbanner, getbannerbyid, uploadbanner, totalcandidatejobapply, totalcandidatecountjobapply}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
-const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany, adddomain, getsubdomainbydomainid, getallsubdomain } = require("./updateusers");
+const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany, adddomain, getsubdomainbydomainid, getallsubdomain,getallcandidateonpostedjob} = require("./updateusers");
 var nodemailer = require('nodemailer');
 var randtoken = require('rand-token');
 
@@ -40,7 +40,7 @@ const upload=multer({
 // })
 
 
-
+router.get("/totalcount/:job_id",totalcandidatecountjobapply)
 
 
 
@@ -110,7 +110,7 @@ router.post("/updatecompanydetail/:company_id",updatecompanydetail)
 router.post("/adddomain",adddomain)
 router.get("/getsubdomain/:domain_id",getsubdomainbydomainid)
 router.get("/subdomain",getallsubdomain)
-
+router.get("/getallcandidateonpostedjob",getallcandidateonpostedjob)
 
 //admin
 router.get("/getcompany",getallcompany)
