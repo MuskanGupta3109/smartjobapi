@@ -645,6 +645,31 @@ pagignationofusers:(req,res)=>{
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
+pagignationofrecruiters:(req,res)=>{
+        // var candidateId= req.params.candidate_id;
+        var job_id=req.params.job_id
+        let page=req.body.page;
+        var start_limit=1;
+       
+        let record_per_page=10;
+        if(!page){
+                page=1
+                // start_limit=start_limit;
+                record_per_page=record_per_page;
+        }
+        if(page){
+                start_limit=(page-1)*record_per_page;
+        }
+        var sql=`SELECT * FROM users where role=2 ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
+        pool.query(sql, function (err, data) {
+          if (err) throw err;
+            res.send({
+                data:data,
+                message:"successful"
+        })
+        //   res.render('users-form', { title: 'User List', editData: data[0]});
+        });
+},
 searchforcandidate:(req,res,next)=>{
        
                 const filters = req.query;

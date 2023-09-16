@@ -26,20 +26,20 @@ module.exports={
     //         }
     //     })
     // }
-    getallcompany:(req,res,next)=>{
-        var query="select * from company";
-        pool.query(query,(err,results)=>{
-                if(!err){
-                        return res.status(200).json({
-                                results,
-                                message:"successful"
-                        });
-                }
-                else{
-                        return res.status(500).json(err);
-                }
-        })
-},
+//     getallcompany:(req,res,next)=>{
+//         var query="select * from company";
+//         pool.query(query,(err,results)=>{
+//                 if(!err){
+//                         return res.status(200).json({
+//                                 results,
+//                                 message:"successful"
+//                         });
+//                 }
+//                 else{
+//                         return res.status(500).json(err);
+//                 }
+//         })
+// },
 getcompanybyid:(req,res,next)=>{
     const id=req.params.company_id;
     var query="select * from company where company_id="+id;
@@ -70,6 +70,31 @@ getallapprovedjobs:(req,res,next)=>{
                         return res.status(500).json(err);
                 }
         })
+},
+getallcompany:(req,res)=>{
+        // var candidateId= req.params.candidate_id;
+        var job_id=req.params.job_id
+        let page=req.body.page;
+        var start_limit=1;
+       
+        let record_per_page=10;
+        if(!page){
+                page=1
+                // start_limit=start_limit;
+                record_per_page=record_per_page;
+        }
+        if(page){
+                start_limit=(page-1)*record_per_page;
+        }
+        var sql=`SELECT * FROM company ORDER BY company.company_id ASC LIMIT ${start_limit},${record_per_page}`;
+        pool.query(sql, function (err, data) {
+          if (err) throw err;
+            res.send({
+                data:data,
+                message:"successful"
+        })
+        //   res.render('users-form', { title: 'User List', editData: data[0]});
+        });
 },
 getallnotapprovedjobs:(req,res,next)=>{
         // const is_Active=req.body.is_active;
