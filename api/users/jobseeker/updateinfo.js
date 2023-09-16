@@ -584,13 +584,32 @@ editactive:(req, res)=> {
                 start_limit=(page-1)*record_per_page;
         }
         // var sql=`SELECT * FROM jobs ORDER BY jobs.job_id ASC LIMIT ${start_limit},${record_per_page}`;
-        var sql=`SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id ORDER BY jobs.job_id ASC LIMIT  ${start_limit},${record_per_page};`
-        pool.query(sql, function (err, data) {
-          if (err) throw err;
-            res.send({
-                data:data,
-                message:"successful"
-        })
+        var query=`SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id ORDER BY jobs.job_id ASC LIMIT  ${start_limit},${record_per_page};`
+        var query2=`SELECT COUNT(*) FROM jobs`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
