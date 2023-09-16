@@ -610,13 +610,32 @@ pagignationofcandidate:(req,res)=>{
         if(page){
                 start_limit=(page-1)*record_per_page;
         }
-        var sql=`SELECT * FROM candidate ORDER BY candidate.candidate_id ASC LIMIT ${start_limit},${record_per_page}`;
-        pool.query(sql, function (err, data) {
-          if (err) throw err;
-            res.send({
-                data:data,
-                message:"successful"
-        })
+        var query=`SELECT * FROM candidate ORDER BY candidate.candidate_id ASC LIMIT ${start_limit},${record_per_page}`;
+        var query2=`SELECT COUNT(*) FROM candidate`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
@@ -635,17 +654,36 @@ pagignationofusers:(req,res)=>{
         if(page){
                 start_limit=(page-1)*record_per_page;
         }
-        var sql=`SELECT * FROM users ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
-        pool.query(sql, function (err, data) {
-          if (err) throw err;
-            res.send({
-                data:data,
-                message:"successful"
-        })
+        var query=`SELECT * FROM users ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
+        var query2=`SELECT COUNT(*) FROM users`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
-pagignationofrecruiters:(req,res)=>{
+pagignationofrecruiterscount:(req,res)=>{
         // var candidateId= req.params.candidate_id;
         var job_id=req.params.job_id
         let page=req.body.page;
@@ -660,13 +698,32 @@ pagignationofrecruiters:(req,res)=>{
         if(page){
                 start_limit=(page-1)*record_per_page;
         }
-        var sql=`SELECT * FROM users where role=2 ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
-        pool.query(sql, function (err, data) {
-          if (err) throw err;
-            res.send({
-                data:data,
-                message:"successful"
-        })
+        var query=`SELECT * FROM users where role=2 ORDER BY users.user_id ASC LIMIT ${start_limit},${record_per_page}`;
+        var query2=`SELECT COUNT(*) FROM users WHERE role=2`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
@@ -926,7 +983,143 @@ getbannerbyid:function(req, res, next) {
 
 
 },
+//     updatepersonalinfo:(req, res)=> {
+//         var id= req.params.candidate_id;
+//           var updateData=req.body;
+//           const user_id=req.body.user_id;
+//           const sqlSearch = "SELECT * FROM users WHERE contact_no=? "
+//           const search_query = mysql.format(sqlSearch, [contact_no])
+//           var sql = `UPDATE candidate SET ?  WHERE candidate_id=${id}`;
+//           var sql2 = `UPDATE user SET contact_no='${contat}' WHERE user_id=${user_id}`;
+//           pool.query(sql, [updateData, id], function (err, data) {
+//           if (err) throw err;
+//           console.log(data.affectedRows + " record(s) updated");
+//           res.send({
+//             error:0,
+//             data:updateData,
+//             message:"succesful updated"
+//     })
+//         });
+        
+//         },
 
+
+//     updateskills:(req,res)=>{
+      
+//         const id=req.params.candidate_id;
+//         const{skills}=req.body;
+//         const sql="update candidate set skills=? where candidate_id=?";
+//         const rows=pool.query(sql,[skills,id]);
+//         if(rows){
+//                 // console.log(rows)
+//                 return res.status(200).json({message:"product update successfully"});
+//         }
+//         else {
+//                 return res.status(500).json(err);
+//             }
+        
+    
+// },
+
+// updatepesonalinfo:(req,res)=>{
+//         const id=req.params.candidate_id;
+//         const{father_name,contact_no,dob,gender,martial_status,address,address2,city,state,zip}=req.body;
+//         const sql="update candidate set father_name=?,contact_no=?,dob=?,gender=?,martial_status=?,address=?,address2=?,city=?,state=?,zip=? where candidate_id=?";
+//         const rows=pool.query(sql,[father_name,contact_no,dob,gender,martial_status,address,address2,city,state,zip,id]);
+//         if(rows){
+//                 // console.log(rows)
+//                 return res.status(200).json({message:"product update successfully"});
+              
+//         }
+//         else {
+//                 return res.status(500).json(err);
+//             }
+        
+// },
+
+
+
+
+
+// updatetechnical:(req,res)=>{
+//         const id=req.params.candidate_id;
+//         const{current_company,current_salary,experiance,designation,domain}=req.body;
+//         const sql="update candidate set current_company=?,current_salary=?,experiance,designation=?,domain=? where candidate_id=?";
+//         const rows=pool.query(sql,[current_company,current_salary,experiance,designation,domain,id]);
+//         if(rows){
+//                 // console.log(rows)
+//                 return res.status(200).json({message:"product update successfully"});
+//         }
+//         else {
+//                 return res.status(500).json(err);
+//             }
+        
+// },
+
+// getalljob:(req,res)=>{
+       
+//         const rows= pool.query("select * from jobs"),function(error,results,fields)
+//         if(rows){
+//                 return rows
+//                 return res.send({ error: false, data: rows, message: 'user has been updated successfully.' });
+//                 return res.json.rows
+//                 console.log(rows)
+//                 return res.status(200).json({message:"product update successfully"});
+//                    return res.send({ error: false, data:rows, message: 'user has been updated successfully.' });
+//                 return res.status(200)(rows)
+//         }
+       
+      
+// },
+
+getalljob:(req,res,next)=>{
+        var query="SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id";
+        
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
+getallrecruitercount:(req,res,next)=>{
+        // var query="SELECT jobs.company_id,company.name,jobs.job_id,jobs.title,jobs.location,jobs.description,jobs.no_of_post,jobs.domain,jobs.required_experience,jobs.package,jobs.job_type,jobs.required_qualification,jobs.required_skills,jobs.schedule FROM jobs LEFT JOIN company ON company.company_id = jobs.company_id";
+        var query=`SELECT * FROM users where role=2`;
+        var query2=`SELECT COUNT(*) FROM users WHERE role=2`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+              
+
+        })
+},
 }
 
 

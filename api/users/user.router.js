@@ -1,6 +1,6 @@
 const { getusers, getjobseker, getrecruiter, getadmin, userlogin, createUser,updateuser, createUsers, insert, createUseers, createUseerbycontactno, logout, changepassword} = require("../users/authentication/usercontrooler");
 const router = require("express").Router();
-const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply, addbanner, getbanner, getbannerbyid, uploadbanner, totalcandidatejobapply, totalcandidatecountjobapply}=require("../users/jobseeker/updateinfo")
+const {updateeducation,updateskills,updatetechnical, getalljob, getcandidatebyid,getcandidatepersonalinfo,getcandidateeduinfo, getjobbyid, edittechnical, editeducation, editeskills, editpersonalinfo,updatepersonalinfo, editresume, updateresume, appliedonjob, pagignation, editactive, updateactive, pagignationwithpage, pagignationofcandidate, search, searchforcandidate, searchforjob, uploadimage, getimage, getresume, uploadresume, applyonjob, pagignationofjobwithpage, pagignationofusers, addquery, totaljobapply, addbanner, getbanner, getbannerbyid, uploadbanner, totalcandidatejobapply, totalcandidatecountjobapply, pagignationofrecruiters, getallrecruitercount, pagignationofrecruiterscount}=require("../users/jobseeker/updateinfo")
 const{update,getallapprovedjobs, getallcompany,getcompanybyid, getallnotapprovedjobs}=require("../users/admin/updateinfo")
 const pool=require("../../db/connect_db");
 const { addcompany, addjob, updatejob, getjob, getidproof, uploadidproof, getallactive, getalldeactive, editcompanydetail, updatecompanydetail, getallapprovedjobsforcompany, getallactivejobseeker, getalldeactivejobseeker, getallactiverecruiter, getalldeactiverecruiter, getallpostedjobbycompany, adddomain, getsubdomainbydomainid, getallsubdomain,getallcandidateonpostedjob, getallactivedeactiverecruiter, getallapprovednotappjobsforcompany} = require("./updateusers");
@@ -154,7 +154,8 @@ router.get("/getallapprovedjobforcompany/:company_id",getallapprovedjobsforcompa
 
 router.get("/totaljobapply/:candidate_id",totaljobapply)
 router.get("/totalcandidatejobapply/:job_id",totalcandidatejobapply)
-
+router.get("/pagignationofrecruiterandcount",pagignationofrecruiterscount)
+router.get("/getallrecruitercount",getallrecruitercount)
 
 
 router.get('/edit/:candidate_id', function(req, res, next) {  //use for edit each fields of candidate details
