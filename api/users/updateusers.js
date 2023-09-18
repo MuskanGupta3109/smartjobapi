@@ -293,7 +293,7 @@ getallactivedeactiverecruiter:(req,res,next)=>{
         })
 },
 getalldeactiverecruiter:(req,res,next)=>{
-    var query="select * from users where is_active=0 and role=2";
+    var query="select * from users where is_active=-1 and role=2";
     pool.query(query,(err,results)=>{
             if(!err){
                     return res.status(200).json({
