@@ -86,13 +86,32 @@ getallcompany:(req,res)=>{
         if(page){
                 start_limit=(page-1)*record_per_page;
         }
-        var sql=`SELECT * FROM company ORDER BY company.company_id ASC LIMIT ${start_limit},${record_per_page}`;
-        pool.query(sql, function (err, data) {
-          if (err) throw err;
-            res.send({
-                data:data,
-                message:"successful"
-        })
+        var query=`SELECT * FROM company ORDER BY company.company_id ASC LIMIT ${start_limit},${record_per_page}`;
+        var query2=`SELECT COUNT(*) FROM jobs`;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        
+                        pool.query(query2,(err,result2)=>{
+                                if(!err){
+                                        return res.status(200).json({
+                                                error:0,
+                                                data:{...results, candidateCound:result2},
+                                                message:"successful"
+                                        });
+                                }
+                                else{
+                                        return res.status(500).json(err);
+                                }
+                        })
+                        // return res.status(200).json({
+                        //         error:0,
+                        //         data:results,
+                        //         message:"successful"
+                        // });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
         //   res.render('users-form', { title: 'User List', editData: data[0]});
         });
 },
