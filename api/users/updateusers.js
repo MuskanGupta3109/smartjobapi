@@ -372,6 +372,36 @@ getallapprovednotappjobsforcompany:(req,res,next)=>{
                 }
         })
 },
+getallapprovednotappjobs:(req,res,next)=>{
+        const is_approved=req.body.is_approved;
+        // console.log(req.body)
+        // const company_id=req.params.company_id;
+        let page=req.body.page;
+        var start_limit=1;
+       
+        let record_per_page=10;
+        if(!page){
+                page=1
+                // start_limit=start_limit;
+                record_per_page=record_per_page;
+        }
+        if(page){
+                start_limit=(page-1)*record_per_page;
+        }
+        var query="select * from jobs where is_approved="+is_approved+" ORDER BY jobs.job_id ASC LIMIT "+start_limit+","+record_per_page+"" ;
+        pool.query(query,(err,results)=>{
+                if(!err){
+                        return res.status(200).json({
+                                error:0,
+                                data:results,
+                                message:"successful"
+                        });
+                }
+                else{
+                        return res.status(500).json(err);
+                }
+        })
+},
 adddomain:async (req, res) => {
         // const id=req.params.user_id;
         const name = req.body.name;
