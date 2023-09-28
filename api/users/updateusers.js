@@ -38,7 +38,7 @@ module.exports={
         const id=req.params.company_id;
         // const C_name=req.params.name;
         // const{title,location,description,no_of_post,domain,required_experience,package,job_type,required_qualification,required_skills,schedule}=req.body;
-
+// 
         const title = req.body.title;
         const location = req.body.location;
         const description = req.body.description;
